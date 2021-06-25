@@ -1,7 +1,19 @@
-from flask import Flask, json # flask should be installed
+from flask import Flask, request, json # flask should be installed
 import sqlite3
+from hashlib import md5
 
 api = Flask(__name__)
+
+@api.route('/users/login', methods=['POST'])
+def get_token():
+  data = request.json
+  con = sqlite3.connect('data.db')
+  con.row_factory = sqlite3.Row     # needed for using keys() later
+  cur = con.cursor()
+  cur.execute('SELECT id, token FROM users WHERE email = ? AND password = ?', (data['email'], md5(data['password'].encode('UTF-8')).hexdigest()))
+  row = cur.fetchone()
+  user = dict(zip(row.keys(), row))
+  return json.dumps(user)
 
 
 @api.route('/products')             # default is GET
