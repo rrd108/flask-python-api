@@ -1,8 +1,13 @@
 from flask import Flask, request, json
+from flask_cors import CORS
 import sqlite3
 from hashlib import md5
 
 api = Flask(__name__)
+CORS(api)
+api.config['CORS_HEADERS'] = 'Content-Type'
+api.config['CORS_METHODS'] = ['GET', 'POST']
+api.config['CORS_ORIGINS'] = ['localhost', 'localhost:3000']
 
 @api.route('/users/login', methods=['POST'])
 def get_token():
