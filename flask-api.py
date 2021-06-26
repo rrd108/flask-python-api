@@ -47,13 +47,22 @@ def get_products():
     con = sqlite3.connect('data.db')
     con.row_factory = sqlite3.Row     # needed for using keys() later
     cur = con.cursor()
-    cur.execute('SELECT * FROM products')
-    rows = cur.fetchall()
-    products = []
-    for row in rows:
-        d = dict(zip(row.keys(), row))   # a dict with column names as keys
-        products.append(d)
-    return json.dumps(products)
+
+    if request.method == 'GET':
+        cur.execute('SELECT * FROM products')
+        rows = cur.fetchall()
+        products = []
+        for row in rows:
+            d = dict(zip(row.keys(), row))   # a dict with column names as keys
+            products.append(d)
+        return json.dumps(products)
+
+    if request.method == 'POST':
+        product = request.json
+        cur.execute('INSERT INTO products (category, name, description, picture, price, stock) VALUES (?, ?, ?, ?, ?, ?)', (product['category'], product['name'], product['description'], product['picture'], product['price'], product['stock']))
+        con.commit()
+        product['id'] = cur.lastrowid
+        return json.dumps(product)
 
 
 if __name__ == '__main__':
