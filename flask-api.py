@@ -1,7 +1,8 @@
-from flask import Flask, request, json
+from flask import Flask, request, json, Response
 from flask_cors import CORS
 import sqlite3
 from hashlib import md5
+from auth import is_accessible
 
 api = Flask(__name__)
 CORS(api)
@@ -21,8 +22,28 @@ def get_token():
     return json.dumps(user)
 
 
-@api.route('/products')             # default is GET
+@api.route('/users')
+def get_users():
+    if not is_accessible():
+        return Response('Access denied', 401, {'WWW-Authenticate': 'Basic realm="Login Required"'})
+
+    con = sqlite3.connect('data.db')
+    con.row_factory = sqlite3.Row     # needed for using keys() later
+    cur = con.cursor()
+    cur.execute('SELECT * FROM users')
+    rows = cur.fetchall()
+    users = []
+    for row in rows:
+        d = dict(zip(row.keys(), row))   # a dict with column names as keys
+        users.append(d)
+    return json.dumps(users)
+
+
+@api.route('/products', methods=['GET', 'POST'])             # default is GET
 def get_products():
+    if not is_accessible():
+        return Response('Access denied', 401, {'WWW-Authenticate': 'Basic realm="Login Required"'})
+
     con = sqlite3.connect('data.db')
     con.row_factory = sqlite3.Row     # needed for using keys() later
     cur = con.cursor()
