@@ -5,10 +5,8 @@ from hashlib import md5
 from auth import is_accessible
 
 api = Flask(__name__)
-CORS(api)
-api.config['CORS_HEADERS'] = 'Content-Type'
-api.config['CORS_METHODS'] = ['GET', 'POST']
-api.config['CORS_ORIGINS'] = ['localhost', 'localhost:3000']
+CORS(api, origins=['http://localhost:8000', 'http://localhost:3000'], methods=['GET', 'POST'])
+# api.config['CORS_HEADERS'] = 'Content-Type'
 
 @api.route('/users/login', methods=['POST'])
 def get_token():
