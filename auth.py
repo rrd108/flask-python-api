@@ -3,9 +3,6 @@ import sqlite3
 
 
 def is_accessible():
-    if request.method == 'OPTIONS':
-        return True
-
     noAuthResources = {
         'GET' : ('products'),
         'POST' : ('users=login'),
