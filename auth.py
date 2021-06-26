@@ -7,17 +7,16 @@ def is_accessible():
         return True
 
     noAuthResources = {
-    'GET' : ('products'),
-    'POST' : ('users=login'),
-    'PATCH' : (),
-    'DELETE' : ()
+        'GET' : ('products'),
+        'POST' : ('users=login'),
+        'PATCH' : (),
+        'DELETE': ()
     }
 
     if request.url.rsplit('/', 1)[-1] in noAuthResources[request.method]:
         return True
 
     token = request.headers['Token'] if 'Token' in request.headers else None
-
     con = sqlite3.connect('data.db')
     cur = con.cursor()
     cur.execute('SELECT id FROM users WHERE token = ?', (token,))
