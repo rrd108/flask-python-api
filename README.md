@@ -1,5 +1,8 @@
 # Flask Python REST API
 
+## Video
+[Python REST API építés 50 perc alatt Flask-kel](https://www.youtube.com/watch?v=qNjVCqU-Xcg)
+
 ## Endpoints
 
 | URL          | HTTP method | Auth | JSON Response     |
